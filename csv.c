@@ -12,7 +12,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-// because i so hate strtok i gave my only func
+
 int get_next_csv_int( const char* str, int* curr_idx ) {
     unsigned int len = strlen( str );
     int v = -1;
