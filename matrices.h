@@ -7,7 +7,7 @@
 //
 #pragma once
 
-// TODO randmat using a normal distribution around num nodes
+
 
 #include <assert.h>
 #include <math.h>
@@ -59,7 +59,7 @@ static inline void transpose_mat( const float *in, float *out, int rows,
     }
 }
 
-// notes:
+
 // * input vector must have elements == matrix COLS
 // * output vector must have elements == matrix ROWS
 // note: can ~speed up by switching loops around. i went with formula repro 1st
@@ -69,11 +69,7 @@ static inline void mult_mat_vec( const float *mat, int rows, int cols,
     assert( vec_in );
     assert( vec_out );
     
-    // general formula is for ea matrix row mult ea col el in row w eac vec el
-    // m[row 0, col 0] * v[0] + m[row 0][col 1] * v[1] ... m[row 0][col m] * v[n]
-    // m[row 1, col 0] * v[0] + m[row 1][col 1] * v[1] ... m[row 1][col m] * v[n]
-    // ...
-    // m[row n, col 0] * v[0] + m[row n][col 1] * v[1] ... m[row n][col m] * v[n]
+   
     //memset( vec_out, 0, sizeof( float ) * rows );
     for ( int r = 0; r < rows; r++ ) {
         vec_out[r] = 0.0f;
@@ -108,10 +104,6 @@ static inline void sigmoid( const float *vec_in, float *vec_out, int elements ) 
     }
 }
 
-// note: final rows = rows in first, final cols = cols in second
-//    |1|           | 1x2 1x3 1x4 |   | 2 3 4  |
-//    |2| [2 3 4] = | 2x2 2x3 2x4 | = | 4 6 8  |
-//    |3|           | 3x2 3x3 3x4 |   | 6 9 12 |
 static inline void colrow_vec_mult( const float *col_vec, const float *row_vec,
                                    int rows, int cols, float *matrix_out ) {
     for ( int c = 0; c < cols; c++ ) {
