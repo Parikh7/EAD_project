@@ -205,24 +205,22 @@ void train_network( int nsamples, int ninputs, int noutputs,
     // samples loop here
     for ( int curr_sample = 0; curr_sample < nsamples; curr_sample++ ) {
         
-        // learning rate loop here somewhere -- probably vice versa?
+       
         for ( int step = 0; step < network.max_steps; step++ ) {
             
-            { // first part is same as query()
+            { 
                 memcpy( network.inputs, inputs_list[curr_sample],
                        network.ninputs * sizeof( float ) );
-                // ANTON: i switched around row and cols vars here because valgrind told me
-                // i was wrong
+              
                 mult_mat_vec( network.input_to_hidden_weights, network.nhiddens,
                              network.ninputs, network.inputs, network.hiddens );
                 sigmoid( network.hiddens, network.hiddens, network.nhiddens );
-                // ANTON: i switched around row and cols vars here because valgrind told me
-                // i was wrong
+                
                 mult_mat_vec( network.hidden_to_output_weights, network.noutputs,
                              network.nhiddens, network.hiddens, network.outputs );
                 sigmoid( network.outputs, network.outputs, network.noutputs );
             }
-            { // second part compares result to desired result and back-propagates error
+            { 
                 for ( int i = 0; i < network.noutputs; i++ ) {
                     network.output_errors[i] =
                     targets_list[curr_sample][i] - network.outputs[i];
@@ -230,13 +228,10 @@ void train_network( int nsamples, int ninputs, int noutputs,
                     // printf( "errors[%i] = %f\n", i, network.output_errors[i] );
                 }
                 
-                // transpose the hidden->output matrix to go backwards
                 transpose_mat( network.hidden_to_output_weights,
                               network.hidden_to_output_back_weights, network.nhiddens,
                               network.noutputs );
-                // work out proportional errors for hidden layer too
-                // ANTON: i switched around row and cols vars here because valgrind told me
-                // i was wrong
+                
                 mult_mat_vec( network.hidden_to_output_back_weights, network.nhiddens,
                              network.noutputs, network.output_errors,
                              network.hidden_errors );
@@ -309,30 +304,27 @@ void train_network( int nsamples, int ninputs, int noutputs,
             }
 #endif
         }
-    } // end steps loop
+    } 
     
    
 }
 
-// note: make sure inputs vector is populated first
+
 void query( const float *inputs ) {
     assert( inputs );
     
     printf( "querying...\n" );
     memcpy( network.inputs, inputs, network.ninputs * sizeof( float ) );
     memset( network.outputs, 0, network.noutputs );
-    
-    // feed input -> hidden layer
-    // ANTON reversed rows/cols here too
+
     mult_mat_vec( network.input_to_hidden_weights, network.nhiddens, network.ninputs,
                  network.inputs, network.hiddens );
-    // apply sigmoid to dampen activation signal before output
+    
     sigmoid( network.hiddens, network.hiddens, network.nhiddens );
-    // feed hidden -> output layer
-    // ANTON reversed rows/cols here too
+  
     mult_mat_vec( network.hidden_to_output_weights, network.noutputs,
                  network.nhiddens, network.hiddens, network.outputs );
-    // apply sigmoid to dampen activation signal before output
+
     sigmoid( network.outputs, network.outputs, network.noutputs );
 }
 
