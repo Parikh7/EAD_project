@@ -10,9 +10,6 @@
 #include "matrices.h"
 #include <time.h>
 
-//#define DEBUG_PRINT
-//#define DRAW_OUT_IMAGES
-//#define PRINT_TRAINING
 
 typedef struct network_t {
     int ninputs;
@@ -50,15 +47,16 @@ int main() {
     int nhiddens = 100;
     int noutputs = 10;
     float learning_rate = 0.3f;
-    int max_steps = 1; // i dont think they do any steps in book -- suspect this will cause overtraining
-    int epochs = 10; // 1 to 10 went from ~80% to ~95% accuracy
+    int max_steps = 1; 
+    int epochs = 10; 
     
     int num_lines = 2000; // more samples = more accurate.
     float labels[num_lines];
     float pixels[num_lines][num_pixels];
     read_csv( "/Users/parikh/Desktop/mnist_train.csv", num_lines, labels, pixels );
 #ifdef DRAW_OUT_IMAGES
-    for ( int j = 0; j < num_lines; j++ ) { // write first image out to test it worked
+    for ( int j = 0; j < num_lines; j++ ) 
+    { 
         char tmp[128];
         sprintf( tmp, "img%i_label_%i.ppm", j, (int)labels[j] );
         FILE *f = fopen( tmp, "w" );
@@ -75,9 +73,8 @@ int main() {
     
     init_network( ninputs, nhiddens, noutputs, learning_rate, max_steps );
     
-    for ( int epoch = 0; epoch < epochs; epoch++ ) { // training run
-        // prepare targets in form       0   1   2    3   4   5 ... 9
-        //                              [0.1 1.0 0.1 0.1 0.1 0.1...0.1]
+    for ( int epoch = 0; epoch < epochs; epoch++ ) 
+    { 
         float targets_list[num_lines][noutputs];
         for ( int l = 0; l < num_lines; l++ ) {
             for ( int o = 0; o < noutputs; o++ ) {
@@ -97,7 +94,7 @@ int main() {
         train_network( num_lines, ninputs, noutputs, pixels, targets_list );
     }
     
-    // TODO load test set and do this
+
     
     {
         int num_lines = 100;
@@ -123,8 +120,7 @@ int main() {
 #ifdef DEBUG_PRINT
             print_mat( network.outputs, network.noutputs, 1 );
 #endif
-            //        printf( "getchar:\n" );
-            //    getchar();
+          
         }
         float accuracy = (float)sum_correct / (float)num_lines;
         printf( "total accuracy = %f\n", accuracy );
@@ -135,7 +131,7 @@ int main() {
 void init_network( int ninputs, int nhiddens, int noutputs, float learning_rate,
                   int max_steps ) {
     printf( "initialising...\n" );
-  //  printf( "math e constant = %.12f\n", M_E );
+
     
     network.ninputs = ninputs;
     network.nhiddens = nhiddens;
@@ -143,13 +139,13 @@ void init_network( int ninputs, int nhiddens, int noutputs, float learning_rate,
     network.max_steps = max_steps;
     network.learning_rate = learning_rate;
     
-    { // program memory allocation
+    {
         size_t sz_a = sizeof( float ) * ninputs * nhiddens;
         size_t sz_b = sizeof( float ) * nhiddens * noutputs;
         size_t sz_inputs = sizeof( float ) * ninputs;
         size_t sz_hiddens = sizeof( float ) * nhiddens;
         size_t sz_outputs = sizeof( float ) * noutputs;
-        // matrices between layers
+      
         network.input_to_hidden_weights = (float *)malloc( sz_a );
         assert( network.input_to_hidden_weights );
         network.input_to_hidden_delta_weights = (float *)malloc( sz_a );
